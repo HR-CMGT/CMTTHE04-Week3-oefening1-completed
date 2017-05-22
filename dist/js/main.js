@@ -1,5 +1,6 @@
 var Paddle = (function () {
     function Paddle(xp, up, down) {
+        var _this = this;
         this.downSpeed = 0;
         this.upSpeed = 0;
         this.div = document.createElement("paddle");
@@ -10,8 +11,8 @@ var Paddle = (function () {
         this.y = 200;
         this.width = 25;
         this.height = 100;
-        window.addEventListener("keydown", this.onKeyDown.bind(this));
-        window.addEventListener("keyup", this.onKeyUp.bind(this));
+        window.addEventListener("keydown", function (event) { return _this.onKeyDown(event); });
+        window.addEventListener("keyup", function (event) { return _this.onKeyUp(event); });
     }
     Paddle.prototype.onKeyDown = function (event) {
         switch (event.keyCode) {
@@ -88,19 +89,31 @@ var Ball = (function () {
 }());
 var Game = (function () {
     function Game() {
+        var _this = this;
         this.balls = new Array();
-        this.display = new ScoreDisplay(this);
+        this._display = new ScoreDisplay();
         this.paddle1 = new Paddle(0, 87, 83);
         this.paddle2 = new Paddle(window.innerWidth - 25, 38, 40);
         for (var i = 0; i < 25; i++) {
             this.balls.push(new Ball(this));
         }
         this.utils = new Utils();
-        requestAnimationFrame(this.gameLoop.bind(this));
+        requestAnimationFrame(function () { return _this.gameLoop(); });
     }
+    Object.defineProperty(Game.prototype, "display", {
+        get: function () {
+            return this._display;
+        },
+        set: function (value) {
+            this._display = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Game.prototype.gameLoop = function () {
+        var _this = this;
         this.updateElements();
-        requestAnimationFrame(this.gameLoop.bind(this));
+        requestAnimationFrame(function () { return _this.gameLoop(); });
     };
     Game.prototype.updateElements = function () {
         for (var _i = 0, _a = this.balls; _i < _a.length; _i++) {
@@ -120,11 +133,10 @@ window.addEventListener("load", function () {
     new Game();
 });
 var ScoreDisplay = (function () {
-    function ScoreDisplay(g) {
+    function ScoreDisplay() {
         this.scorep1 = 0;
         this.scorep2 = 0;
         this.div = document.getElementsByTagName("ui")[0];
-        this.game = g;
         this.div.innerHTML = "Pong Start!";
     }
     ScoreDisplay.prototype.updateScores = function (s1, s2) {

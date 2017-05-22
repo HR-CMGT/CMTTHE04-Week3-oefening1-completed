@@ -5,12 +5,21 @@ class Game {
     private paddle1:Paddle;
     private paddle2:Paddle;
     private utils:Utils;
+    private _display:ScoreDisplay;
     
-    public display:ScoreDisplay;
+
+	public get display(): ScoreDisplay {
+		return this._display;
+	}
+	public set display(value: ScoreDisplay) {
+		this._display = value;
+	}
+
+
     
     constructor() {
         // ui houdt de score bij en toont dit in het scherm
-        this.display = new ScoreDisplay(this);
+        this._display = new ScoreDisplay();
         
         // twee spelers
         this.paddle1= new Paddle(0, 87, 83);
@@ -25,7 +34,7 @@ class Game {
         this.utils = new Utils();
         
         // start game loop        
-        requestAnimationFrame(this.gameLoop.bind(this));
+        requestAnimationFrame(() => this.gameLoop());
         
     }
     
@@ -33,7 +42,7 @@ class Game {
     private gameLoop():void{
         this.updateElements();
         
-        requestAnimationFrame(this.gameLoop.bind(this));
+        requestAnimationFrame(() => this.gameLoop());
     }
     
     // update balls en paddles

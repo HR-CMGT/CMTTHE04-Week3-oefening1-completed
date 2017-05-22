@@ -5,12 +5,10 @@ class ScoreDisplay {
     
     private scorep1:number = 0;
     private scorep2:number = 0;
-    private game:Game;
     private div:Element;
     
-    constructor(g:Game) {
+    constructor() {
         this.div = document.getElementsByTagName("ui")[0];
-        this.game = g;
         this.div.innerHTML = "Pong Start!"; 
     }
     

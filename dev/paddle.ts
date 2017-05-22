@@ -6,10 +6,10 @@ class Paddle {
     private div:HTMLElement;
     
     private downkey : number;
-    private upkey : number;
+    private upkey   : number;
     
-    private downSpeed : number = 0;
-    private upSpeed : number = 0;
+    private downSpeed   : number = 0;
+    private upSpeed     : number = 0;
     
     public x : number;
     public y : number;
@@ -22,18 +22,18 @@ class Paddle {
         document.body.appendChild(this.div);
         
         // keys kunnen verschillend zijn voor elke instance van charmander
-        this.upkey = up;
+        this.upkey   = up;
         this.downkey = down;
         
         // positie
-        this.x = xp;
-        this.y = 200;
-        this.width = 25;
+        this.x      = xp;
+        this.y      = 200;
+        this.width  = 25;
         this.height = 100;
         
         // keyboard listener
-        window.addEventListener("keydown", this.onKeyDown.bind(this));
-        window.addEventListener("keyup", this.onKeyUp.bind(this));
+        window.addEventListener("keydown",  (event : KeyboardEvent) => this.onKeyDown(event));
+        window.addEventListener("keyup",    (event : KeyboardEvent) => this.onKeyUp(event));
     }
     
     
