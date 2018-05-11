@@ -1,3 +1,4 @@
+"use strict";
 var Paddle = (function () {
     function Paddle(xp, up, down) {
         var _this = this;
@@ -11,11 +12,14 @@ var Paddle = (function () {
         this.y = 200;
         this.width = 25;
         this.height = 100;
-        window.addEventListener("keydown", function (event) { return _this.onKeyDown(event); });
-        window.addEventListener("keyup", function (event) { return _this.onKeyUp(event); });
+        window.addEventListener("keydown", function (e) { return _this.onKeyDown(e); });
+        window.addEventListener("keyup", function (e) { return _this.onKeyUp(e); });
     }
-    Paddle.prototype.onKeyDown = function (event) {
-        switch (event.keyCode) {
+    Paddle.prototype.getRectangle = function () {
+        return this.div.getBoundingClientRect();
+    };
+    Paddle.prototype.onKeyDown = function (e) {
+        switch (e.keyCode) {
             case this.upkey:
                 this.upSpeed = 5;
                 break;
@@ -24,8 +28,8 @@ var Paddle = (function () {
                 break;
         }
     };
-    Paddle.prototype.onKeyUp = function (event) {
-        switch (event.keyCode) {
+    Paddle.prototype.onKeyUp = function (e) {
+        switch (e.keyCode) {
             case this.upkey:
                 this.upSpeed = 0;
                 break;
@@ -35,23 +39,28 @@ var Paddle = (function () {
         }
     };
     Paddle.prototype.update = function () {
-        var targetY = this.y - this.upSpeed + this.downSpeed;
-        if (targetY > 0 && targetY + 100 < window.innerHeight)
-            this.y = targetY;
-        this.draw();
-    };
-    Paddle.prototype.draw = function () {
-        this.div.style.transform = "translate(" + this.x + "px, " + this.y + "px) scaleX(-1)";
+        var newY = this.y - this.upSpeed + this.downSpeed;
+        if (newY > 0 && newY + 100 < window.innerHeight)
+            this.y = newY;
+        this.div.style.transform = "translate(" + this.x + "px, " + this.y + "px)";
     };
     return Paddle;
 }());
 var Ball = (function () {
-    function Ball(g) {
-        this.game = g;
+    function Ball() {
+        this.x = 0;
+        this.y = 0;
+        this.width = 0;
+        this.height = 0;
+        this.speedX = 0;
+        this.speedY = 0;
         this.div = document.createElement("ball");
         document.body.appendChild(this.div);
         this.startPosition();
     }
+    Ball.prototype.getRectangle = function () {
+        return this.div.getBoundingClientRect();
+    };
     Ball.prototype.startPosition = function () {
         this.x = (Math.random() * (window.innerWidth / 2)) + (window.innerWidth / 4);
         this.y = (Math.random() * (window.innerHeight / 2)) + (window.innerHeight / 4);
@@ -72,66 +81,60 @@ var Ball = (function () {
             this.speedY *= -1;
         }
         if (this.x > window.innerWidth || this.x < -40) {
-            if (this.speedX > 0) {
-                this.game.display.updateScores(0, 1);
-            }
-            if (this.speedX < 0) {
-                this.game.display.updateScores(1, 0);
-            }
             this.startPosition();
         }
-        this.draw();
-    };
-    Ball.prototype.draw = function () {
+        if (this.x < -40) {
+            this.startPosition();
+        }
         this.div.style.transform = "translate(" + this.x + "px, " + this.y + "px)";
     };
     return Ball;
 }());
 var Game = (function () {
     function Game() {
-        var _this = this;
-        this.balls = new Array();
-        this._display = new ScoreDisplay();
+        this.balls = [];
+        this.scores = [0, 0];
+        this.ui = document.getElementsByTagName("ui")[0];
+        this.ui.innerHTML = "Start!";
         this.paddle1 = new Paddle(0, 87, 83);
         this.paddle2 = new Paddle(window.innerWidth - 25, 38, 40);
-        for (var i = 0; i < 25; i++) {
-            this.balls.push(new Ball(this));
+        for (var i = 0; i < 5; i++) {
+            this.balls.push(new Ball());
         }
-        this.utils = new Utils();
-        requestAnimationFrame(function () { return _this.gameLoop(); });
+        this.gameLoop();
     }
-    Object.defineProperty(Game.prototype, "display", {
-        get: function () {
-            return this._display;
-        },
-        set: function (value) {
-            this._display = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
     Game.prototype.gameLoop = function () {
         var _this = this;
-        this.updateElements();
-        requestAnimationFrame(function () { return _this.gameLoop(); });
-    };
-    Game.prototype.updateElements = function () {
         for (var _i = 0, _a = this.balls; _i < _a.length; _i++) {
             var b = _a[_i];
-            if (this.utils.hasOverlap(b, this.paddle1))
+            if (this.checkCollision(b.getRectangle(), this.paddle1.getRectangle())) {
+                this.scores[0] = this.scores[0] + 1;
+                this.updateUI();
                 b.hitPaddle();
-            if (this.utils.hasOverlap(b, this.paddle2))
+            }
+            if (this.checkCollision(b.getRectangle(), this.paddle2.getRectangle())) {
+                this.scores[1] = this.scores[1] + 1;
+                this.updateUI();
                 b.hitPaddle();
+            }
             b.update();
         }
         this.paddle1.update();
         this.paddle2.update();
+        requestAnimationFrame(function () { return _this.gameLoop(); });
+    };
+    Game.prototype.updateUI = function () {
+        this.ui.innerHTML = "P1: " + this.scores[0] + "    -   P2:" + this.scores[1];
+    };
+    Game.prototype.checkCollision = function (a, b) {
+        return (a.left <= b.right &&
+            b.left <= a.right &&
+            a.top <= b.bottom &&
+            b.top <= a.bottom);
     };
     return Game;
 }());
-window.addEventListener("load", function () {
-    new Game();
-});
+window.addEventListener("load", function () { return new Game(); });
 var ScoreDisplay = (function () {
     function ScoreDisplay() {
         this.scorep1 = 0;
@@ -157,13 +160,5 @@ var ScoreDisplay = (function () {
         }
     };
     return ScoreDisplay;
-}());
-var Utils = (function () {
-    function Utils() {
-    }
-    Utils.prototype.hasOverlap = function (c1, c2) {
-        return !(c2.x > c1.x + c1.width || c2.x + c2.width < c1.x || c2.y > c1.y + c1.height || c2.y + c2.height < c1.y);
-    };
-    return Utils;
 }());
 //# sourceMappingURL=main.js.map

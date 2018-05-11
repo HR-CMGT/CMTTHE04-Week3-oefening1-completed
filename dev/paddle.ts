@@ -1,78 +1,67 @@
-/**
- * Paddle
- */
 class Paddle {
     
-    private div:HTMLElement;
+    private div:HTMLElement
     
-    private downkey : number;
-    private upkey   : number;
+    private downkey : number
+    private upkey   : number
     
-    private downSpeed   : number = 0;
-    private upSpeed     : number = 0;
+    private downSpeed   : number = 0
+    private upSpeed     : number = 0
     
-    public x : number;
-    public y : number;
-    public width: number;
-    public height: number;
+    private x : number
+    private y : number
+    private width: number
+    private height: number
     
     constructor(xp:number, up:number, down:number) {
-        // maak een divje waar de gif in komt te staan
-        this.div = document.createElement("paddle");
-        document.body.appendChild(this.div);
+        this.div = document.createElement("paddle")
+        document.body.appendChild(this.div)
         
-        // keys kunnen verschillend zijn voor elke instance van charmander
-        this.upkey   = up;
-        this.downkey = down;
+        this.upkey   = up
+        this.downkey = down
         
-        // positie
-        this.x      = xp;
-        this.y      = 200;
-        this.width  = 25;
-        this.height = 100;
+        this.x      = xp
+        this.y      = 200
+        this.width  = 25
+        this.height = 100
         
-        // keyboard listener
-        window.addEventListener("keydown",  (event : KeyboardEvent) => this.onKeyDown(event));
-        window.addEventListener("keyup",    (event : KeyboardEvent) => this.onKeyUp(event));
+        window.addEventListener("keydown", (e: KeyboardEvent) => this.onKeyDown(e))
+        window.addEventListener("keyup", (e: KeyboardEvent) => this.onKeyUp(e))
     }
-    
-    
-    // keyboard input zorgt dat de snelheid wordt aangepast
-    private onKeyDown(event:KeyboardEvent):void {
-        switch(event.keyCode){
-        case this.upkey:
-            this.upSpeed = 5;
-            break;
-        case this.downkey:
-            this.downSpeed = 5;
-            break;
-        }
+
+    public getRectangle() {
+        return this.div.getBoundingClientRect()
     }
-    
-    // speed op 0 als de eigen keys zijn losgelaten
-    private onKeyUp(event:KeyboardEvent):void {
-        switch(event.keyCode){
-        case this.upkey:
-            this.upSpeed = 0;
-            break;
-        case this.downkey:
-            this.downSpeed = 0;
-            break;
+
+    private onKeyDown(e: KeyboardEvent): void {
+        switch (e.keyCode) {
+            case this.upkey:
+                this.upSpeed = 5
+                break
+            case this.downkey:
+                this.downSpeed = 5
+                break
         }
     }
 
-    
-    // bewegen - let op, de update functie wordt door game aangeroepen! niet door de event listener (dat is niet smooth)
-    public update() : void {
-        let targetY = this.y - this.upSpeed + this.downSpeed;
-        if(targetY > 0 && targetY+100 < window.innerHeight) this.y = targetY;
-                        
-        this.draw();
+    private onKeyUp(e: KeyboardEvent): void {
+        switch (e.keyCode) {
+            case this.upkey:
+                this.upSpeed = 0
+                break
+            case this.downkey:
+                this.downSpeed = 0
+                break
+        }
     }
-    
-    // tekenen - tip: scaleX kan je gebruiken om het texture te flippen
-    public draw() : void {
-        this.div.style.transform = "translate("+this.x+"px, "+this.y+"px) scaleX(-1)";
+
+    public update() {
+        let newY = this.y - this.upSpeed + this.downSpeed
+
+        // als de paddle binnen beeld blijft, dan ook echt updaten
+        if (newY > 0 && newY + 100 < window.innerHeight) this.y = newY
+
+        this.div.style.transform = `translate(${this.x}px, ${this.y}px)`
     }
     
 }

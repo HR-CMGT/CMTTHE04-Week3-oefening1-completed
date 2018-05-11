@@ -1,63 +1,61 @@
 /// <reference path="ball.ts"/>
+
 class Game {
     
-    private balls: Array<Ball> = new Array<Ball>();
-    private paddle1:Paddle;
-    private paddle2:Paddle;
-    private utils:Utils;
-    private _display:ScoreDisplay;
-    
+    private balls: Ball[] = []
+    private paddle1:Paddle
+    private paddle2:Paddle
+    private ui:Element
+    private scores:number[] = [0,0]
 
-	public get display(): ScoreDisplay {
-		return this._display;
-	}
-	public set display(value: ScoreDisplay) {
-		this._display = value;
-	}
-
-
-    
     constructor() {
-        // ui houdt de score bij en toont dit in het scherm
-        this._display = new ScoreDisplay();
+        this.ui = document.getElementsByTagName("ui")[0]!
+        this.ui.innerHTML = "Start!"
         
-        // twee spelers
-        this.paddle1= new Paddle(0, 87, 83);
-        this.paddle2 = new Paddle(window.innerWidth - 25, 38, 40);
+        this.paddle1 = new Paddle(0, 87, 83)
+        this.paddle2 = new Paddle(window.innerWidth - 25, 38, 40)
         
-        // array met balletjes
-        for (var i = 0; i < 25; i++) {
-            this.balls.push(new Ball(this));
+        for (var i = 0; i < 5; i++) {
+            this.balls.push(new Ball())
         }
-        
-        // utils
-        this.utils = new Utils();
-        
-        // start game loop        
-        requestAnimationFrame(() => this.gameLoop());
-        
+
+        this.gameLoop()        
     }
     
-    // game loop
     private gameLoop():void{
-        this.updateElements();
-        
-        requestAnimationFrame(() => this.gameLoop());
-    }
-    
-    // update balls en paddles
-    private updateElements():void {
-                
         for (var b of this.balls) {
-            // de bal raakt een paddle?
-            if(this.utils.hasOverlap(b, this.paddle1)) b.hitPaddle();
-            if(this.utils.hasOverlap(b, this.paddle2)) b.hitPaddle();
-            // beweeg de bal
+            if (this.checkCollision(b.getRectangle(), this.paddle1.getRectangle())) {
+                this.scores[0] = this.scores[0] + 1
+                this.updateUI()
+                b.hitPaddle()
+            }
+            if (this.checkCollision(b.getRectangle(), this.paddle2.getRectangle())) {
+                this.scores[1] = this.scores[1] + 1
+                this.updateUI()
+                b.hitPaddle()
+            }
+
             b.update();
         }
-        
-        // also move all the paddles
+
         this.paddle1.update();
         this.paddle2.update();
+        
+        requestAnimationFrame(() => this.gameLoop())
     }
+
+    private updateUI(){
+        this.ui.innerHTML = `P1: ${this.scores[0]}    -   P2:${this.scores[1]}`
+    }
+
+    private checkCollision(a: ClientRect, b: ClientRect) {
+        return (a.left <= b.right &&
+            b.left <= a.right &&
+            a.top <= b.bottom &&
+            b.top <= a.bottom)
+    }
+    
 } 
+
+
+window.addEventListener("load", () => new Game())

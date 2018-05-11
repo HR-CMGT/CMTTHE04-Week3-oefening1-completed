@@ -1,25 +1,55 @@
-# PRG04-Week3-oefening1-completed
+# CMTTHE04 Week3 oefening 1
 
 ## Pong
 
-Pong in Typescript
+Startproject voor Pong in Typescript
 
-### Opdracht
+### Beweeg de bal
 
-- Maak een ball instance aan in game.ts
-- De game loop roept de move() functie van de ball aan
-- Hoe weet de bal of hij uit het scherm gaat? Wat moet er dan gebeuren?
-- Laat 20 ballen over het scherm bewegen
-- Maak de paddle.ts class af
-- Maak twee paddle instances aan in game.ts
-- Beweeg de paddles met het toetsenbord
-- Voeg in game.ts collision detection toe tussen de balls en de paddles
-- Wat moet er gebeuren als een ball een paddle raakt?
+Bestudeer de opzet van het project: game roept de update functie van de bal aan. Maak de volgende aanpassingen:
+
+- In de update functie van de bal tel je 1 op bij de `x` en `y` variabelen.
+- Log de waarde van de `x` en `y` variabelen in de console.
+- Gebruik de variabelen om de bal op die plek te tekenen!
+- Geef de bal twee nieuwe variabelen: `xspeed` en `yspeed`. Zet deze op 1.
+- In de update functie tel je `xspeed` op bij `x` en `yspeed` bij `y`.
+
+### Hou de bal binnen het scherm
+
+De breedte en hoogte van het scherm kan je opvragen met `window.innerWidth` en `window.innerHeight`. 
+
+- Controleer of de positie van de bal binnen het window is met `if (this.x ...)`.
+- Als de bal rechts of links buiten beeld gaat, dan moet je de xspeed omdraaien. Dit doe door de xspeed te vermenigvuldigen met -1:  `this.xspeed *= -1`.
+- Doe hetzelfde met de yspeed als de bal boven of onder uit beeld gaat.
+- Controleer of de bal nu continu door het beeld blijft stuiteren, of dat je nog iets moet aanpassen.
+
+### Meerdere ballen
+
+- Maak een array van ballen in Game.ts: `balls:Ball[] = []`
+- Plaats een aantal ballen in de array met `this.balls.push(new Ball())`. Experimenteer met het aantal ballen.
+- Update alle ballen in de gameloop van game.ts
+
+### Paddles
+
+- Het project bevat een `paddle.ts` class. Voeg een paddle instance toe aan Game.ts!
+- Bestudeer het [voorbeeld van collision detection](https://github.com/HR-CMGT/Typescript/blob/master/snippets/collision.md)
+- Voeg in game.ts collision detection toe tussen de balls en de paddle. 
+- Toon een bericht in de console als de bal een paddle raakt.
+- Wat moet er verder nog gebeuren als een ball een paddle raakt?
+
+### De game af maken
+
+- De bal mag alleen stuiteren tegen de bovenkant en onderkant van het scherm, en tegen de paddle.
+- Als de bal tegen de paddle stuitert krijg je een punt.
+- Als de bal links buiten beeld gaat, is het game over. Rechts stuitert de bal nog wel terug.
+- Kan je de bal steeds sneller laten gaan, naar mate die vaker geraakt wordt?
+- Toon de score.
+- Kan je twee paddles toevoegen die elk hun eigen keyboard controls hebben? 
+- Kan je pong spelen met meerdere ballen tegelijk?
+
 
 ### Voorbeeldcode
 
-- Collision detection
-- Keyboard input
-- Game Loop
-
-[Voorbeeldcode](https://github.com/HR-CMGT/PRG04-Week3-examples)
+- [Collision detection](https://github.com/HR-CMGT/Typescript/blob/master/snippets/collision.md)
+- [Keyboard input](https://github.com/HR-CMGT/Typescript/blob/master/snippets/movement.md)
+- [Game Loop](https://github.com/HR-CMGT/Typescript/blob/master/snippets/game.md)

@@ -1,13 +1,14 @@
 {
     "compilerOptions": {
-        "sourceMap":  true,
+        "strict": true,
+        "target": "es5",
         "removeComments": true,
-        "target":"es5",
-        "noImplicitAny": true,
-        "noImplicitReturns": true,
-        "out": "dist/js/main.js"
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "sourceMap": true,
+        "outFile": "docs/js/main.js"
     },
-    "exclude": [
-        "dist"
+    "include": [
+        "dev/**/*"
     ]
 }
