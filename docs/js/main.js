@@ -10,8 +10,6 @@ var Paddle = (function () {
         this.downkey = down;
         this.x = xp;
         this.y = 200;
-        this.width = 25;
-        this.height = 100;
         window.addEventListener("keydown", function (e) { return _this.onKeyDown(e); });
         window.addEventListener("keyup", function (e) { return _this.onKeyUp(e); });
     }
@@ -50,8 +48,6 @@ var Ball = (function () {
     function Ball() {
         this.x = 0;
         this.y = 0;
-        this.width = 0;
-        this.height = 0;
         this.speedX = 0;
         this.speedY = 0;
         this.div = document.createElement("ball");
@@ -64,8 +60,6 @@ var Ball = (function () {
     Ball.prototype.startPosition = function () {
         this.x = (Math.random() * (window.innerWidth / 2)) + (window.innerWidth / 4);
         this.y = (Math.random() * (window.innerHeight / 2)) + (window.innerHeight / 4);
-        this.width = 40;
-        this.height = 40;
         this.speedX = Math.round(Math.random() * 3) + 1;
         this.speedY = Math.round(Math.random() * 6) - 3;
         if (Math.random() > 0.5)
@@ -80,10 +74,7 @@ var Ball = (function () {
         if (this.y + 40 > window.innerHeight || this.y < 0) {
             this.speedY *= -1;
         }
-        if (this.x > window.innerWidth || this.x < -40) {
-            this.startPosition();
-        }
-        if (this.x < -40) {
+        if (this.x > window.innerWidth || this.x < -40 || this.x < -40) {
             this.startPosition();
         }
         this.div.style.transform = "translate(" + this.x + "px, " + this.y + "px)";
@@ -135,30 +126,4 @@ var Game = (function () {
     return Game;
 }());
 window.addEventListener("load", function () { return new Game(); });
-var ScoreDisplay = (function () {
-    function ScoreDisplay() {
-        this.scorep1 = 0;
-        this.scorep2 = 0;
-        this.div = document.getElementsByTagName("ui")[0];
-        this.div.innerHTML = "Pong Start!";
-    }
-    ScoreDisplay.prototype.updateScores = function (s1, s2) {
-        this.scorep1 += s1;
-        this.scorep2 += s2;
-        this.display();
-        this.checkGameOver();
-    };
-    ScoreDisplay.prototype.display = function () {
-        this.div.innerHTML = this.scorep1 + " : " + this.scorep2;
-    };
-    ScoreDisplay.prototype.checkGameOver = function () {
-        if (this.scorep1 > 4) {
-            this.div.innerHTML = "SPELER 1 HEEFT GEWONNEN!";
-        }
-        else if (this.scorep2 > 4) {
-            this.div.innerHTML = "SPELER 2 HEEFT GEWONNEN!";
-        }
-    };
-    return ScoreDisplay;
-}());
 //# sourceMappingURL=main.js.map

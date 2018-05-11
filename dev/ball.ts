@@ -6,8 +6,6 @@ class Ball {
     
     private x : number = 0
     private y: number = 0
-    private width: number = 0
-    private height: number = 0
     
     private speedX: number = 0
     private speedY: number = 0
@@ -25,9 +23,6 @@ class Ball {
     private startPosition(){
         this.x = (Math.random() * (window.innerWidth/2)) + (window.innerWidth/4)
         this.y = (Math.random() * (window.innerHeight/2)) + (window.innerHeight/4)
-
-        this.width = 40
-        this.height = 40
         
         this.speedX = Math.round(Math.random() * 3)+1
         this.speedY = Math.round(Math.random() * 6)-3
@@ -47,13 +42,7 @@ class Ball {
             this.speedY *= -1
         }
         
-        if (this.x > window.innerWidth || this.x < -40) { 
-            //this.game.display.updateScores(0,1);
-            this.startPosition()
-        }
-
-        if( this.x < -40) { 
-            //this.game.display.updateScores(1,0);
+        if (this.x > window.innerWidth || this.x < -40 || this.x < -40) { 
             this.startPosition()
         } 
                         

@@ -10,8 +10,6 @@ class Paddle {
     
     private x : number
     private y : number
-    private width: number
-    private height: number
     
     constructor(xp:number, up:number, down:number) {
         this.div = document.createElement("paddle")
@@ -22,8 +20,6 @@ class Paddle {
         
         this.x      = xp
         this.y      = 200
-        this.width  = 25
-        this.height = 100
         
         window.addEventListener("keydown", (e: KeyboardEvent) => this.onKeyDown(e))
         window.addEventListener("keyup", (e: KeyboardEvent) => this.onKeyUp(e))
